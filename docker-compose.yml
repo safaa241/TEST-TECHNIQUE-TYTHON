@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: clinicflow-db
+    environment:
+      POSTGRES_DB: clinicflow
+      POSTGRES_USER: clinicflow
+      POSTGRES_PASSWORD: clinicflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: clinicflow-backend
+    depends_on:
+      - db
+    environment:
+      PORT: 5000
+      NODE_ENV: development
+      DATABASE_URL: postgresql://clinicflow:clinicflow@db:5432/clinicflow
+      JWT_SECRET: clinicflow-dev-secret
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "5000:5000"
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: clinicflow-frontend
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:5000
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  pgdata:
