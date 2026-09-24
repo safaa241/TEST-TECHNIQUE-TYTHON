@@ -6,17 +6,11 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "src/app.js"
+      "entrypoint": "src/app.js"  
     }
   },
   "rewrites": [
-    {
-      "source": "/api(/.*)?",
-      "destination": { "service": "backend" }
-    },
-    {
-      "source": "/(.*)",
-      "destination": { "service": "frontend" }
-    }
+    { "source": "/api(/.*)?", "destination": { "service": "backend" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
   ]
 }
